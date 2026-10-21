@@ -9,4 +9,7 @@ export function getSql() {
 export class ConfigError extends Error {}
 
 export const json = (body, status = 200, headers = {}) =>
-  new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...headers } });
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...headers },
+  });
