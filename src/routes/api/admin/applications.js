@@ -14,7 +14,10 @@ export const Route = createFileRoute("/api/admin/applications")({
           return json({ applications: rows });
         } catch (e) {
           console.error(e);
-          return json({ error: "Database unavailable or not configured" }, 503);
+          const msg = !process.env.DATABASE_URL
+            ? "DATABASE_URL is not set in environment variables"
+            : `Database connection failed: ${e?.message || e}`;
+          return json({ error: msg }, 503);
         }
       },
       PATCH: async ({ request }) => {
