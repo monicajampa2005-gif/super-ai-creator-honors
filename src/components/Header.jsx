@@ -1,9 +1,9 @@
-import logo from "@/assets/logo.png.asset.json";
+import logo from "@/assets/logo.png";
 
 export function Logo() {
   return (
     <div className="flex items-center gap-3">
-      <img src={logo.url} alt="Super AI Academy logo" className="h-9 w-9 rounded-lg" />
+      <img src={logo} alt="Super AI Academy logo" className="h-9 w-9 rounded-lg" />
       <span className="font-display text-sm font-semibold tracking-wider">SUPER AI ACADEMY</span>
     </div>
   );
