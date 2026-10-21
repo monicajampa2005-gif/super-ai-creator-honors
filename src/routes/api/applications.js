@@ -23,8 +23,9 @@ export const Route = createFileRoute("/api/applications")({
         if (!process.env.DATABASE_URL || !process.env.BLOB_READ_WRITE_TOKEN) {
           return json(
             {
-              error:
-                "Submissions are not available yet: the database or file storage has not been configured.",
+              error: !process.env.DATABASE_URL
+                ? "DATABASE_URL is not configured on the server."
+                : "BLOB_READ_WRITE_TOKEN is not configured on the server.",
             },
             503,
           );
@@ -75,7 +76,7 @@ export const Route = createFileRoute("/api/applications")({
           return json({ referenceNo: ref, categories: v.category.map((id) => categoryById(id)?.name).join(", ") }, 201);
         } catch (err) {
           console.error("Application save failed", err);
-          return json({ error: "We could not save your application. Please try again." }, 500);
+          return json({ error: `Submission failed: ${err?.message || err}` }, 500);
         }
       },
     },
