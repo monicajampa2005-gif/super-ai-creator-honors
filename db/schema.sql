@@ -11,9 +11,7 @@ create table if not exists applications (
   state           text not null,
   pincode         char(6) not null,
   profile_link    text not null,
-  category        text not null check (category in (
-    'social-media-superstar','viral-content-champion','most-creative-creator','consistency-champion',
-    'educational-content-creator','rising-star-creator','ugc-creator','ai-creative-genius','ai-powered-personal-creator')),
+  category        jsonb not null default '[]',  -- array of selected category IDs
   content_link_1  text not null,
   content_link_2  text not null,
   content_link_3  text not null,
@@ -26,6 +24,9 @@ create table if not exists applications (
   updated_at      timestamptz not null default now()
 );
 
-create index if not exists applications_category_idx on applications (category);
 create index if not exists applications_status_idx on applications (status);
 create index if not exists applications_created_idx on applications (created_at desc);
+
+-- If upgrading an existing table, run this to change the category column:
+-- alter table applications alter column category type jsonb using to_jsonb(array[category]);
+-- drop index if exists applications_category_idx;

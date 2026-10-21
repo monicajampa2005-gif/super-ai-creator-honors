@@ -28,9 +28,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState([]);
   const applyFor = (id) => {
-    setCategory(id);
+    setCategory((prev) => (prev.includes(id) ? prev : [...prev, id]));
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
   };
   return (

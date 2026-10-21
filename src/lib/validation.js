@@ -29,7 +29,6 @@ export const TEXT_FIELDS = [
   "state",
   "pincode",
   "profileLink",
-  "category",
   "link1",
   "link2",
   "link3",
@@ -45,7 +44,11 @@ export function validateApplication(v, screenshots, photo, validCategory) {
   if (v.pincode && !isPin(v.pincode)) e.pincode = "Enter a valid 6-digit PIN code";
   for (const k of ["profileLink", "link1", "link2", "link3"])
     if (v[k] && !isUrl(v[k])) e[k] = "Enter a valid URL (https://…)";
-  if (v.category && !validCategory(v.category)) e.category = "Select a category";
+  // category is now an array
+  const cats = Array.isArray(v.category) ? v.category : v.category ? [v.category] : [];
+  if (!cats.length) e.category = "Select at least one category";
+  else if (cats.length > 9) e.category = "Too many categories selected";
+  else if (cats.some((c) => !validCategory(c))) e.category = "Invalid category selected";
   if (!screenshots?.length) e.screenshots = "Upload at least one screenshot";
   else if (screenshots.length > MAX_SCREENSHOTS)
     e.screenshots = `Maximum ${MAX_SCREENSHOTS} screenshots`;

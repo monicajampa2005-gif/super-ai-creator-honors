@@ -38,6 +38,9 @@ export const Route = createFileRoute("/api/applications")({
         const v = {};
         for (const k of TEXT_FIELDS) v[k] = String(form.get(k) || "").trim();
         v.consent = form.get("consent") === "true";
+        // category is now a multi-value array
+        const categories = form.getAll("category").map((c) => String(c).trim()).filter(Boolean);
+        v.category = categories;
         const screenshots = form.getAll("screenshots").filter((f) => typeof f === "object");
         const photo = form.get("photo");
         const errors = validateApplication(
@@ -67,9 +70,9 @@ export const Route = createFileRoute("/api/applications")({
           await sql`insert into applications
             (reference_no, full_name, phone, email, city, state, pincode, profile_link, category,
              content_link_1, content_link_2, content_link_3, profile_image, screenshots, consent)
-            values (${ref}, ${v.fullName}, ${v.phone}, ${v.email.toLowerCase()}, ${v.city}, ${v.state}, ${v.pincode}, ${v.profileLink}, ${v.category},
+            values (${ref}, ${v.fullName}, ${v.phone}, ${v.email.toLowerCase()}, ${v.city}, ${v.state}, ${v.pincode}, ${v.profileLink}, ${JSON.stringify(v.category)}::jsonb,
              ${v.link1}, ${v.link2}, ${v.link3}, ${photoBlob.pathname}, ${JSON.stringify(shots.map((s) => s.pathname))}::jsonb, true)`;
-          return json({ referenceNo: ref, category: categoryById(v.category).name }, 201);
+          return json({ referenceNo: ref, categories: v.category.map((id) => categoryById(id)?.name).join(", ") }, 201);
         } catch (err) {
           console.error("Application save failed", err);
           return json({ error: "We could not save your application. Please try again." }, 500);

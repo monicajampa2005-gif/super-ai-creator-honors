@@ -54,6 +54,14 @@ export function ApplicationForm({ category, setCategory }) {
     </>
   );
 
+  // category is now an array managed by parent; toggle a single item in/out
+  const toggleCategory = (id) => {
+    const next = category.includes(id)
+      ? category.filter((c) => c !== id)
+      : [...category, id];
+    setCategory(next);
+  };
+
   async function submit(e) {
     e.preventDefault();
     if (state.status === "loading") return;
@@ -66,7 +74,10 @@ export function ApplicationForm({ category, setCategory }) {
     }
     setState({ status: "loading" });
     const fd = new FormData();
-    Object.entries(values).forEach(([k, val]) => fd.append(k, String(val)));
+    // append all fields except category
+    Object.entries(v).forEach(([k, val]) => fd.append(k, String(val)));
+    // send each selected category as a separate form value
+    category.forEach((c) => fd.append("category", c));
     shots.forEach((f) => fd.append("screenshots", f));
     fd.append("photo", photo[0]);
     try {
@@ -97,7 +108,8 @@ export function ApplicationForm({ category, setCategory }) {
         <p className="mt-4 text-muted-foreground">Reference number</p>
         <p className="font-display text-2xl text-gold-gradient">{state.referenceNo}</p>
         <p className="mt-4 text-muted-foreground">
-          Category: <span className="text-foreground">{state.category}</span>
+          Categories:{" "}
+          <span className="text-foreground">{state.categories}</span>
         </p>
         <p className="mt-4 text-xs text-muted-foreground">Please save your reference number.</p>
       </div>
@@ -137,20 +149,30 @@ export function ApplicationForm({ category, setCategory }) {
       <Group n={5} label="Instagram / YouTube / Facebook Profile Link">
         {input("profileLink", { type: "url", placeholder: "https://" })}
       </Group>
-      <Group n={6} label="Award Category Applying For">
-        <select
-          className="field"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          aria-invalid={!!errors.category}
-        >
-          <option value="">Select a category</option>
+      <Group n={6} label="Award Category Applying For (select all that apply)">
+        <div className="grid gap-2 sm:grid-cols-2">
           {CATEGORIES.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name} — {c.winners} winners
-            </option>
+            <label
+              key={c.id}
+              className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors ${
+                category.includes(c.id)
+                  ? "border-[var(--gold)] bg-accent"
+                  : "border-border hover:border-[var(--gold-soft)]"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={category.includes(c.id)}
+                onChange={() => toggleCategory(c.id)}
+                className="mt-0.5 h-4 w-4 accent-[var(--gold)]"
+              />
+              <span className="text-sm leading-snug">
+                <span className="font-semibold">{c.name}</span>
+                <span className="ml-1 text-xs text-muted-foreground">— {c.winners} winners</span>
+              </span>
+            </label>
           ))}
-        </select>
+        </div>
         <Err m={errors.category} />
       </Group>
       <Group n={7} label="Best 3 Content Links Created During the Challenge">

@@ -117,7 +117,15 @@ function toCsv(rows) {
   return [
     cols.join(","),
     ...rows.map((r) =>
-      cols.map((c) => esc(c === "category" ? categoryById(r[c])?.name || r[c] : r[c])).join(","),
+      cols
+        .map((c) => {
+          if (c === "category") {
+            const cats = Array.isArray(r[c]) ? r[c] : [r[c]];
+            return esc(cats.map((id) => categoryById(id)?.name || id).join("; "));
+          }
+          return esc(r[c]);
+        })
+        .join(","),
     ),
   ].join("\n");
 }
@@ -161,7 +169,12 @@ function Detail({ app, onSaved }) {
         <div>
           <h3 className="text-lg font-semibold">{app.full_name}</h3>
           <p className="text-gold">{app.reference_no}</p>
-          <p className="text-muted-foreground">{categoryById(app.category)?.name}</p>
+          <p className="text-muted-foreground">
+            {(Array.isArray(app.category) ? app.category : [app.category])
+              .map((id) => categoryById(id)?.name)
+              .filter(Boolean)
+              .join(", ")}
+          </p>
         </div>
       </div>
       <dl className="grid grid-cols-[7rem_1fr] gap-y-1 break-all">
@@ -276,7 +289,7 @@ function Admin() {
     () =>
       apps.filter(
         (a) =>
-          (!cat || a.category === cat) &&
+          (!cat || (Array.isArray(a.category) ? a.category : [a.category]).includes(cat)) &&
           (!st || a.status === st) &&
           (!q ||
             [a.full_name, a.email, a.phone, a.reference_no, a.city]
@@ -329,7 +342,10 @@ function Admin() {
         {CATEGORIES.map((c) => (
           <div key={c.id} className="rounded-xl border border-border bg-card p-3">
             <div className="text-xl font-bold">
-              {apps.filter((a) => a.category === c.id).length}
+              {apps.filter((a) => {
+                  const cats = Array.isArray(a.category) ? a.category : [a.category];
+                  return cats.includes(c.id);
+                }).length}
             </div>
             <div className="text-[11px] leading-tight text-muted-foreground">
               {c.name.replace(" Award", "")}
@@ -411,7 +427,7 @@ function Admin() {
                   >
                     <td className="p-3 text-gold">{a.reference_no}</td>
                     <td className="p-3">{a.full_name}</td>
-                    <td className="p-3">{categoryById(a.category)?.name}</td>
+                    <td className="p-3">{(Array.isArray(a.category) ? a.category : [a.category]).map((id) => categoryById(id)?.name).filter(Boolean).join(", ")}</td>
                     <td className="p-3">
                       <StatusBadge status={a.status} />
                     </td>
