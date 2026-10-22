@@ -69,9 +69,9 @@ export const Route = createFileRoute("/api/applications")({
           ]);
           const sql = getSql();
           await sql`insert into applications
-            (reference_no, full_name, phone, email, city, state, pincode, profile_link, category,
+            (reference_no, full_name, phone, email, address, city, state, pincode, profile_link, category,
              content_link_1, content_link_2, content_link_3, profile_image, screenshots, consent)
-            values (${ref}, ${v.fullName}, ${v.phone}, ${v.email.toLowerCase()}, ${v.city}, ${v.state}, ${v.pincode}, ${v.profileLink}, ${JSON.stringify(v.category)}::jsonb,
+            values (${ref}, ${v.fullName}, ${v.phone}, ${v.email.toLowerCase()}, ${v.address}, ${v.city}, ${v.state}, ${v.pincode}, ${v.profileLink}, ${JSON.stringify(v.category)}::jsonb,
              ${v.link1}, ${v.link2}, ${v.link3}, ${photoBlob.pathname}, ${JSON.stringify(shots.map((s) => s.pathname))}::jsonb, true)`;
           return json({ referenceNo: ref, categories: v.category.map((id) => categoryById(id)?.name).join(", ") }, 201);
         } catch (err) {

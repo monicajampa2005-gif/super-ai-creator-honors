@@ -25,6 +25,7 @@ export const TEXT_FIELDS = [
   "fullName",
   "phone",
   "email",
+  "address",
   "city",
   "state",
   "pincode",

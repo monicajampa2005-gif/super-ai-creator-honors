@@ -2,12 +2,14 @@ import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { CATEGORIES, categoryById } from "@/lib/categories";
 import { validateApplication } from "@/lib/validation";
+import { INDIAN_STATES } from "@/lib/indianStates";
 import { ImageUpload } from "./ImageUpload";
 
 const EMPTY = {
   fullName: "",
   phone: "",
   email: "",
+  address: "",
   city: "",
   state: "",
   pincode: "",
@@ -137,12 +139,39 @@ export function ApplicationForm({ category, setCategory }) {
       <Group n={3} label="Email Address">
         {input("email", { type: "email", autoComplete: "email" })}
       </Group>
-      <Group n={4} label="City and State, Pincode">
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div>{input("city", { placeholder: "City" })}</div>
-          <div>{input("state", { placeholder: "State" })}</div>
+      <Group n={4} label="Full Address">
+        <div className="space-y-3">
           <div>
-            {input("pincode", { placeholder: "Pincode", inputMode: "numeric", maxLength: 6 })}
+            <textarea
+              className="field min-h-20 resize-y"
+              value={v.address}
+              onChange={set("address")}
+              placeholder="Flat / House no, Building, Street, Area, Landmark"
+              aria-invalid={!!errors.address}
+            />
+            <Err m={errors.address} />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div>{input("city", { placeholder: "City" })}</div>
+            <div>
+              <select
+                className="field"
+                value={v.state}
+                onChange={set("state")}
+                aria-invalid={!!errors.state}
+              >
+                <option value="">Select State</option>
+                {INDIAN_STATES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+              <Err m={errors.state} />
+            </div>
+            <div>
+              {input("pincode", { placeholder: "Pincode", inputMode: "numeric", maxLength: 6 })}
+            </div>
           </div>
         </div>
       </Group>

@@ -103,6 +103,7 @@ function toCsv(rows) {
     "full_name",
     "phone",
     "email",
+    "address",
     "city",
     "state",
     "pincode",
@@ -182,6 +183,8 @@ function Detail({ app, onSaved }) {
         <dd>+91 {app.phone}</dd>
         <dt className="text-muted-foreground">Email</dt>
         <dd>{app.email}</dd>
+        <dt className="text-muted-foreground">Address</dt>
+        <dd>{app.address}</dd>
         <dt className="text-muted-foreground">Location</dt>
         <dd>
           {app.city}, {app.state} – {app.pincode}
@@ -292,7 +295,7 @@ function Admin() {
           (!cat || (Array.isArray(a.category) ? a.category : [a.category]).includes(cat)) &&
           (!st || a.status === st) &&
           (!q ||
-            [a.full_name, a.email, a.phone, a.reference_no, a.city]
+            [a.full_name, a.email, a.phone, a.reference_no, a.city, a.address]
               .join(" ")
               .toLowerCase()
               .includes(q.toLowerCase())),

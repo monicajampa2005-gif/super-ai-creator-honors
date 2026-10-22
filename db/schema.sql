@@ -7,6 +7,7 @@ create table if not exists applications (
   full_name       text not null,
   phone           text not null,
   email           text not null,
+  address         text not null,
   city            text not null,
   state           text not null,
   pincode         char(6) not null,
@@ -27,6 +28,8 @@ create table if not exists applications (
 create index if not exists applications_status_idx on applications (status);
 create index if not exists applications_created_idx on applications (created_at desc);
 
--- If upgrading an existing table, run this to change the category column:
+-- If upgrading an existing table, run these to add the address column
+-- and change the category column:
+-- alter table applications add column if not exists address text not null default '';
 -- alter table applications alter column category type jsonb using to_jsonb(array[category]);
 -- drop index if exists applications_category_idx;

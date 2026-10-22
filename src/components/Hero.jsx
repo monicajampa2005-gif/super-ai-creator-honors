@@ -1,17 +1,12 @@
-import { Trophy } from "lucide-react";
-
 export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-hero">
       <div className="mx-auto max-w-5xl px-4 pb-20 pt-16 text-center md:pt-24">
-        <div className="fade-up mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-gold/40 shadow-gold">
-          <Trophy className="h-8 w-8 text-gold" />
-        </div>
         <p className="mb-3 text-xs uppercase tracking-[0.3em] text-gold">
           Organized by Super AI Academy
         </p>
         <h1 className="fade-up text-3xl font-bold leading-tight sm:text-5xl md:text-6xl">
-          SUPER AI CREATOR <span className="text-gold-gradient">EXCELLENCE AWARDS</span> 2026
+          Social media <span className="text-gold-gradient">superhero contest winners</span> 2026
         </h1>
         <p className="mt-5 text-lg text-gold-soft md:text-xl">
           Celebrate Creativity. Recognize Innovation. Reward Excellence.
